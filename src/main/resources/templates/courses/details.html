@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${course.title})}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main class="container">
+    <div th:replace="~{fragments/layout :: messages}"></div>
+
+    <a class="back" th:href="@{/courses}">&larr; All courses</a>
+
+    <div class="page-header">
+        <h1>
+            <span th:text="${course.title}">Title</span>
+            <span class="badge" th:text="${course.level}">LEVEL</span>
+        </h1>
+        <div class="actions">
+            <a class="btn" th:href="@{/courses/{id}/edit(id=${course.id})}">Edit</a>
+            <form th:action="@{/courses/{id}/delete(id=${course.id})}" method="post"
+                  onsubmit="return confirm('Delete this course?');">
+                <button type="submit" class="btn danger">Delete</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <p><strong>Instructor:</strong>
+            <a th:href="@{/instructors/{id}(id=${course.instructor.id})}" th:text="${course.instructor.fullName}">Name</a>
+        </p>
+        <p><strong>Price:</strong> <span th:text="${'$' + course.price}">$0</span></p>
+        <p><strong>Duration:</strong> <span th:text="${course.durationHours} + ' hours'">0</span></p>
+        <p><strong>Created:</strong> <span th:text="${#temporals.format(course.createdAt, 'dd MMM yyyy, HH:mm')}">date</span></p>
+        <p><strong>Syllabus:</strong>
+            <a th:if="${course.syllabusFileName}" th:href="@{/courses/{id}/syllabus(id=${course.id})}">Open syllabus</a>
+            <span th:unless="${course.syllabusFileName}" class="muted">No syllabus uploaded</span>
+        </p>
+        <p th:if="${course.description}" th:text="${course.description}" class="bio">Description</p>
+    </div>
+
+    <!-- ========== Many-to-Many: enrolled students ========== -->
+    <h2>Enrolled students (<span th:text="${course.students.size()}">0</span>)</h2>
+
+    <form th:if="${!availableStudents.isEmpty()}"
+          th:action="@{/courses/{id}/enroll(id=${course.id})}" method="post" class="inline-form">
+        <select name="studentId" required>
+            <option th:each="s : ${availableStudents}" th:value="${s.id}"
+                    th:text="${s.fullName} + ' (' + ${s.email} + ')'">Student</option>
+        </select>
+        <button type="submit" class="btn primary">Enroll</button>
+    </form>
+    <p class="muted" th:if="${availableStudents.isEmpty()}">
+        All students are already enrolled (or there are no students yet).
+    </p>
+
+    <p class="muted" th:if="${course.students.isEmpty()}">No students enrolled yet.</p>
+    <table th:unless="${course.students.isEmpty()}">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="s : ${course.students}">
+            <td><a th:href="@{/students/{id}(id=${s.id})}" th:text="${s.fullName}">Name</a></td>
+            <td th:text="${s.email}">email</td>
+            <td class="actions">
+                <form th:action="@{/courses/{id}/unenroll(id=${course.id})}" method="post">
+                    <input type="hidden" name="studentId" th:value="${s.id}">
+                    <button type="submit" class="btn small">Remove</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

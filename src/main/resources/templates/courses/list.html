@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Courses')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main class="container">
+    <div th:replace="~{fragments/layout :: messages}"></div>
+
+    <div class="page-header">
+        <h1>Courses</h1>
+        <a class="btn primary" th:href="@{/courses/new}">+ New course</a>
+    </div>
+
+    <!-- Search / filter / sort form: a GET form, so all values end up in the URL -->
+    <form th:action="@{/courses}" method="get" class="filters">
+        <input type="text" name="search" th:value="${search}" placeholder="Search by title...">
+
+        <select name="level">
+            <option value="">All levels</option>
+            <option th:each="l : ${levels}" th:value="${l}" th:text="${l}" th:selected="${l == level}">LEVEL</option>
+        </select>
+
+        <select name="sort">
+            <option th:each="opt : ${sortOptions}" th:value="${opt.key}" th:text="${opt.value}"
+                    th:selected="${opt.key == sort}">Sort</option>
+        </select>
+
+        <select name="size">
+            <option th:each="s : ${ {5, 10, 20} }" th:value="${s}" th:text="${s} + ' per page'"
+                    th:selected="${s == page.size}">5</option>
+        </select>
+
+        <button type="submit" class="btn primary">Apply</button>
+        <a class="btn" th:href="@{/courses}">Reset</a>
+    </form>
+
+    <p class="muted" th:if="${page.totalElements == 0}">No courses found.</p>
+
+    <table th:if="${page.totalElements > 0}">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Level</th>
+            <th>Instructor</th>
+            <th>Price</th>
+            <th>Duration</th>
+            <th>Students</th>
+            <th>Syllabus</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="course : ${page.content}">
+            <td><a th:href="@{/courses/{id}(id=${course.id})}" th:text="${course.title}">Title</a></td>
+            <td><span class="badge" th:text="${course.level}">LEVEL</span></td>
+            <td th:text="${course.instructor.fullName}">Instructor</td>
+            <td th:text="${'$' + course.price}">$0</td>
+            <td th:text="${course.durationHours} + ' h'">0 h</td>
+            <td th:text="${course.students.size()}">0</td>
+            <td>
+                <a th:if="${course.syllabusFileName}" th:href="@{/courses/{id}/syllabus(id=${course.id})}">View</a>
+                <span th:unless="${course.syllabusFileName}" class="muted">&ndash;</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Pagination info + links. Every link keeps the current search, level, sort and size. -->
+    <p class="muted" th:if="${page.totalElements > 0}"
+       th:text="|Showing ${page.numberOfElements} of ${page.totalElements} courses (page ${page.number + 1} of ${page.totalPages})|">
+    </p>
+
+    <nav class="pagination" th:if="${page.totalPages > 1}">
+        <a th:if="${page.hasPrevious()}"
+           th:href="@{/courses(page=${page.number - 1}, size=${page.size}, sort=${sort}, search=${search}, level=${level})}">&laquo; Previous</a>
+
+        <th:block th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}">
+            <span th:if="${i == page.number}" class="current" th:text="${i + 1}">1</span>
+            <a th:unless="${i == page.number}"
+               th:href="@{/courses(page=${i}, size=${page.size}, sort=${sort}, search=${search}, level=${level})}"
+               th:text="${i + 1}">2</a>
+        </th:block>
+
+        <a th:if="${page.hasNext()}"
+           th:href="@{/courses(page=${page.number + 1}, size=${page.size}, sort=${sort}, search=${search}, level=${level})}">Next &raquo;</a>
+    </nav>
+</main>
+</body>
+</html>

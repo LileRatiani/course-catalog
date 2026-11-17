@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${studentId == null} ? 'New student' : 'Edit student')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main class="container narrow">
+    <a class="back" th:href="${studentId == null} ? @{/students} : @{/students/{id}(id=${studentId})}">&larr; Back</a>
+
+    <h1 th:text="${studentId == null} ? 'New student' : 'Edit student'">Student</h1>
+
+    <form th:action="${studentId == null} ? @{/students} : @{/students/{id}(id=${studentId})}"
+          th:object="${form}" method="post" class="form" novalidate>
+
+        <label for="firstName">First name *</label>
+        <input id="firstName" type="text" th:field="*{firstName}" th:errorclass="invalid">
+        <div class="field-error" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+
+        <label for="lastName">Last name *</label>
+        <input id="lastName" type="text" th:field="*{lastName}" th:errorclass="invalid">
+        <div class="field-error" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+
+        <label for="email">Email *</label>
+        <input id="email" type="email" th:field="*{email}" th:errorclass="invalid">
+        <div class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+
+        <button type="submit" class="btn primary" th:text="${studentId == null} ? 'Create' : 'Save changes'">Save</button>
+    </form>
+</main>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Home')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main class="container">
+    <div th:replace="~{fragments/layout :: messages}"></div>
+
+    <div class="hero">
+        <h1>Online Course Catalog</h1>
+        <p class="muted">Browse courses, manage instructors and enroll students.</p>
+        <div class="actions">
+            <a class="btn primary" th:href="@{/courses}">Browse courses</a>
+            <a class="btn" th:href="@{/courses/new}">+ Add a course</a>
+        </div>
+    </div>
+
+    <!-- Data from the GROUP BY + COUNT @Query (findCoursePopularity) -->
+    <h2>Most popular courses</h2>
+    <p class="muted" th:if="${popularCourses.isEmpty()}">No courses yet.</p>
+    <table th:unless="${popularCourses.isEmpty()}">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Course</th>
+            <th>Enrolled students</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="p, stat : ${popularCourses}">
+            <td th:text="${stat.count}">1</td>
+            <td><a th:href="@{/courses/{id}(id=${p.courseId()})}" th:text="${p.title()}">Course</a></td>
+            <td th:text="${p.studentCount()}">0</td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

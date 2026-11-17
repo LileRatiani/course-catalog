@@ -1,0 +1,180 @@
+:root {
+    --bg: #f6f7fb;
+    --surface: #ffffff;
+    --text: #1f2430;
+    --muted: #6b7280;
+    --border: #e3e6ee;
+    --primary: #3b5bdb;
+    --primary-dark: #2f49b8;
+    --danger: #d64545;
+    --success-bg: #e6f6ec;
+    --success-text: #1e7a43;
+    --error-bg: #fdecec;
+    --error-text: #b42318;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+}
+
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---------- Navigation ---------- */
+.navbar {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    padding: 0.9rem 2rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+.navbar a { color: var(--text); font-weight: 500; }
+.navbar .brand { font-weight: 700; margin-right: auto; color: var(--primary); }
+
+/* ---------- Layout ---------- */
+.container { max-width: 1000px; margin: 2rem auto; padding: 0 1.5rem; }
+.container.narrow { max-width: 560px; }
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.actions { display: flex; gap: 0.5rem; align-items: center; }
+.actions form { margin: 0; }
+
+.back { display: inline-block; margin-bottom: 0.5rem; color: var(--muted); }
+.muted { color: var(--muted); }
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+}
+.bio { white-space: pre-line; }
+
+/* ---------- Buttons ---------- */
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    cursor: pointer;
+}
+.btn:hover { text-decoration: none; border-color: #c5cad6; }
+.btn.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+.btn.primary:hover { background: var(--primary-dark); }
+.btn.danger { background: var(--danger); border-color: var(--danger); color: #fff; }
+.btn.small { padding: 0.25rem 0.7rem; font-size: 0.9rem; }
+
+/* ---------- Tables ---------- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 1rem;
+}
+th, td { padding: 0.7rem 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+th { background: #f0f2f8; font-weight: 600; }
+tr:last-child td { border-bottom: none; }
+td.actions { justify-content: flex-end; }
+
+/* ---------- Forms ---------- */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+}
+.form label { font-weight: 600; margin-top: 0.6rem; }
+.form input, .form textarea, .form select {
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font: inherit;
+}
+.form input.invalid, .form textarea.invalid, .form select.invalid { border-color: var(--danger); }
+.form button { margin-top: 1.2rem; align-self: flex-start; }
+.field-error { color: var(--error-text); font-size: 0.9rem; }
+
+/* ---------- Messages and badges ---------- */
+.alert { padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem; }
+.alert.success { background: var(--success-bg); color: var(--success-text); }
+.alert.error { background: var(--error-bg); color: var(--error-text); }
+
+.badge {
+    display: inline-block;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    background: #eef1fb;
+    color: var(--primary);
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-left: 0.4rem;
+}
+
+/* ---------- Added in Step 7: courses ---------- */
+.hero {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+.hero h1 { margin-top: 0; }
+
+.filters, .inline-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin: 1rem 0;
+}
+.filters input, .filters select, .inline-form select {
+    padding: 0.5rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font: inherit;
+    background: var(--surface);
+}
+.filters input[type="text"] { flex: 1; min-width: 200px; }
+
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 1rem 0 2rem;
+}
+.pagination a, .pagination .current {
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+}
+.pagination .current {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+    font-weight: 600;
+}
+.small { font-size: 0.9rem; }

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- Shared <head>: every page includes this with its own title -->
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title} + ' · Course Catalog'">Course Catalog</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<!-- Shared navigation bar -->
+<nav th:fragment="navbar" class="navbar">
+    <a class="brand" th:href="@{/}">Course Catalog</a>
+    <a th:href="@{/courses}">Courses</a>
+    <a th:href="@{/instructors}">Instructors</a>
+    <a th:href="@{/students}">Students</a>
+</nav>
+
+<!-- Shared success/error messages (from flash attributes after a redirect) -->
+<div th:fragment="messages">
+    <div class="alert success" th:if="${successMessage}" th:text="${successMessage}"></div>
+    <div class="alert error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+</div>
+
+</body>
+</html>

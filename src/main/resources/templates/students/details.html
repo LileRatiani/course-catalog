@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${student.fullName})}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main class="container">
+    <div th:replace="~{fragments/layout :: messages}"></div>
+
+    <a class="back" th:href="@{/students}">&larr; All students</a>
+
+    <div class="page-header">
+        <h1 th:text="${student.fullName}">Name</h1>
+        <div class="actions">
+            <a class="btn" th:href="@{/students/{id}/edit(id=${student.id})}">Edit</a>
+            <form th:action="@{/students/{id}/delete(id=${student.id})}" method="post"
+                  onsubmit="return confirm('Delete this student? They will be removed from all their courses.');">
+                <button type="submit" class="btn danger">Delete</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <p><strong>Email:</strong> <span th:text="${student.email}">email</span></p>
+    </div>
+
+    <!-- This list comes from the custom JOIN @Query: findCoursesByStudentId -->
+    <h2>Enrolled courses</h2>
+    <p class="muted" th:if="${courses.isEmpty()}">Not enrolled in any course yet.</p>
+    <table th:unless="${courses.isEmpty()}">
+        <thead>
+        <tr>
+            <th>Course</th>
+            <th>Level</th>
+            <th>Instructor</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="course : ${courses}">
+            <td><a th:href="@{/courses/{id}(id=${course.id})}" th:text="${course.title}">Course</a></td>
+            <td><span class="badge" th:text="${course.level}">LEVEL</span></td>
+            <td th:text="${course.instructor.fullName}">Instructor</td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

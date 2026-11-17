@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Instructors')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main class="container">
+    <div th:replace="~{fragments/layout :: messages}"></div>
+
+    <div class="page-header">
+        <h1>Instructors</h1>
+        <a class="btn primary" th:href="@{/instructors/new}">+ New instructor</a>
+    </div>
+
+    <p class="muted" th:if="${instructors.isEmpty()}">No instructors yet. Create the first one!</p>
+
+    <table th:unless="${instructors.isEmpty()}">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Courses</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="instructor : ${instructors}">
+            <td>
+                <a th:href="@{/instructors/{id}(id=${instructor.id})}" th:text="${instructor.fullName}">Name</a>
+            </td>
+            <td th:text="${instructor.email}">email</td>
+            <td th:text="${instructor.courses.size()}">0</td>
+            <td class="actions">
+                <a class="btn small" th:href="@{/instructors/{id}/edit(id=${instructor.id})}">Edit</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

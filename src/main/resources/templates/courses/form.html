@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${course == null} ? 'New course' : 'Edit course')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main class="container narrow">
+    <a class="back" th:href="${course == null} ? @{/courses} : @{/courses/{id}(id=${course.id})}">&larr; Back</a>
+
+    <h1 th:text="${course == null} ? 'New course' : 'Edit course'">Course</h1>
+
+    <div class="alert error" th:if="${instructors.isEmpty()}">
+        You need at least one instructor before creating a course.
+        <a th:href="@{/instructors/new}">Create an instructor</a>
+    </div>
+
+    <!--
+        enctype="multipart/form-data" is REQUIRED for file uploads.
+        Without it, the browser sends only the file NAME, not the file content.
+    -->
+    <form th:action="${course == null} ? @{/courses} : @{/courses/{id}(id=${course.id})}"
+          th:object="${form}" method="post" enctype="multipart/form-data" class="form" novalidate>
+
+        <div class="alert error" th:if="${#fields.hasGlobalErrors()}">
+            <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">Error</p>
+        </div>
+
+        <label for="title">Title *</label>
+        <input id="title" type="text" th:field="*{title}" th:errorclass="invalid">
+        <div class="field-error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+
+        <label for="description">Description</label>
+        <textarea id="description" rows="4" th:field="*{description}" th:errorclass="invalid"></textarea>
+        <div class="field-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+
+        <label for="level">Level *</label>
+        <select id="level" th:field="*{level}" th:errorclass="invalid">
+            <option value="">-- choose a level --</option>
+            <option th:each="l : ${levels}" th:value="${l}" th:text="${l}">LEVEL</option>
+        </select>
+        <div class="field-error" th:if="${#fields.hasErrors('level')}" th:errors="*{level}"></div>
+
+        <label for="instructorId">Instructor *</label>
+        <select id="instructorId" th:field="*{instructorId}" th:errorclass="invalid">
+            <option value="">-- choose an instructor --</option>
+            <option th:each="i : ${instructors}" th:value="${i.id}" th:text="${i.fullName}">Name</option>
+        </select>
+        <div class="field-error" th:if="${#fields.hasErrors('instructorId')}" th:errors="*{instructorId}"></div>
+
+        <label for="price">Price ($) *</label>
+        <input id="price" type="number" step="0.01" th:field="*{price}" th:errorclass="invalid">
+        <div class="field-error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+
+        <label for="durationHours">Duration (hours) *</label>
+        <input id="durationHours" type="number" th:field="*{durationHours}" th:errorclass="invalid">
+        <div class="field-error" th:if="${#fields.hasErrors('durationHours')}" th:errors="*{durationHours}"></div>
+
+        <!-- The file input is NOT bound to the form object: the controller receives it
+             separately with @RequestParam("syllabus") MultipartFile -->
+        <label for="syllabus">Syllabus (PDF, DOC, DOCX, max 5 MB)</label>
+        <p class="muted small" th:if="${course != null and course.syllabusFileName != null}">
+            Current file:
+            <a th:href="@{/courses/{id}/syllabus(id=${course.id})}" th:text="${course.syllabusFileName}">file</a>.
+            Choose a new file only if you want to replace it.
+        </p>
+        <input id="syllabus" type="file" name="syllabus" accept=".pdf,.doc,.docx">
+        <div class="field-error" th:if="${syllabusError}" th:text="${syllabusError}"></div>
+
+        <button type="submit" class="btn primary" th:text="${course == null} ? 'Create' : 'Save changes'">Save</button>
+    </form>
+</main>
+</body>
+</html>
